@@ -6117,3 +6117,14 @@ function f27181()
     invoke(A27181(C27181).typ, Tuple{Any}, nothing)
 end
 @test f27181() == C27181(nothing)
+
+# Issue 27209
+@noinline function f27209(x::Union{Float64, Nothing})
+    if x === nothing
+        y = x; return @isdefined(y)
+    else
+        return @isdefined(y)
+    end
+end
+g27209(x) = f27209(x ? nothing : 1.0)
+@test g27209(true) == true
